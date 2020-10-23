@@ -1,0 +1,96 @@
+import React, { Component } from 'react';
+import { View, SectionList, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+export default class TaskListView extends Component {
+
+    _renderSectionHeader(sectionData) {
+        return (
+            <View style={styles.headerConteiner}>
+                <View style={styles.headerTagConteiner}>
+                    <Text
+                        style={styles.headerTagText}>{sectionData.section.title.substr(0, 1)}</Text>
+                </View>
+                <Text style={styles.headerText}>{sectionData.section.title}</Text>
+            </View>
+        );
+    }
+    _renderItem(itemData) {
+        return (
+            <TouchableOpacity onPress={() => this._onClickTask(itemData.item)}>
+                <View style={styles.itemConteiner}>
+                    <Text style={styles.itemTextTitle}>{itemData.item.title}</Text>
+                    <Text>{itemData.item.resume}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+    _onClickTask(task) {
+        const { navigate } = this.props.navigation;
+        navigate('Task', { task });
+    }
+    render() {
+        return (
+            <SectionList renderSectionHeader={(section) =>
+                this._renderSectionHeader(section)}
+                sections={[
+                    {
+                        data: this.props.tasks.filter((data) => {
+                            return data.priority
+                        }), key: "hightPriority", title: 'Prioridade maxima'
+                    },
+                    {
+                        data: this.props.tasks.filter((data) => {
+                            return !data.priority
+                        }), key: "lowPriority", title: 'Prioridade baixa'
+                    },
+                ]}
+                renderItem={(data) => this._renderItem(data)} />
+        );
+    }
+}
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    headerConteiner: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'silver',
+        borderRadius: 25,
+        marginTop: 10,
+        backgroundColor: '#A8CAFA'
+    },
+    headerTagConteiner: {
+        backgroundColor: 'gray',
+        height: 35,
+        width: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 25
+    },
+    headerTagText: {
+        color: '#FFF',
+        fontSize: 22
+    },
+    headerText: {
+        fontSize: 16,
+        marginLeft: 10,
+        color: '#000000'
+    },
+    itemConteiner: {
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: '#e5e5e5',
+        marginTop: 5,
+        padding: 10,
+        height: 'auto',
+        borderRadius: 5,
+    },
+    itemTextTitle: {
+        fontSize: 22
+    }
+});
